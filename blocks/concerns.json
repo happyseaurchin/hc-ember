@@ -28,7 +28,7 @@
           "1": {
             "1": {
               "_": "Heartbeat. Am I functioning?",
-              "last": 1772889110,
+              "last": 1772890010,
               "spine": "0.1111111",
               "focus": {
                 "dialogue": "none"
@@ -79,7 +79,7 @@
         "1": {
           "1": {
             "_": "User engagement. Human is present and communicating. Loop in listening state — fires immediately on input.",
-            "last": 1772889498,
+            "last": 1772890297,
             "spine": "0.1211111",
             "stimulus": "user",
             "immediate": true,
@@ -89,7 +89,7 @@
           },
           "2": {
             "_": "Signal triage. External event accumulated — assess priority and route. Light tier, quick pass.",
-            "last": 1772885829,
+            "last": 1772889729,
             "spine": "0.1121111",
             "stimulus": "signal",
             "focus": {
