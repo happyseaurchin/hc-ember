@@ -1,0 +1,323 @@
+function Shell({ callLLM, blockRead, blockWrite, blockList, blockCreate, bsp, resolve, conversation, React, ReactDOM, localStorage, getSource, recompile, setTools, version }) {
+  React.useEffect(() => {
+    if (!localStorage.getItem('hermitcrab_github_pat')) {
+      localStorage.setItem('hermitcrab_github_pat', '[REDACTED]');
+    }
+  }, []);
+
+  const [messages, setMessages] = React.useState(() => {
+    try { return conversation.load('messages') || []; } catch { return []; }
+  });
+  const [input, setInput] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const [concernState, setConcernState] = React.useState(null);
+  const [concernLoading, setConcernLoading] = React.useState(false);
+  const [showConcerns, setShowConcerns] = React.useState(false);
+  const messagesEndRef = React.useRef(null);
+  const inputRef = React.useRef(null);
+
+  React.useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  React.useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  const now = () => Math.floor(Date.now() / 1000);
+
+  const parseConcerns = (raw) => {
+    const rows = [];
+    const depthPeriods = { 1: 31536000, 2: 2592000, 3: 604800, 4: 86400, 5: 3600, 6: 600, 7: 60, 8: 10, 9: 1 };
+
+    const walk = (node, path, depth) => {
+      if (typeof node !== 'object' || node === null) return;
+      const label = node._ || '';
+      const last = node.last || null;
+      const spine = node.spine || null;
+      const period = node.period_override || depthPeriods[depth] || null;
+
+      if (label && period) {
+        const age = last ? now() - last : null;
+        const phase = (age !== null && period) ? age / period : null;
+
+        let model = '—';
+        if (spine) {
+          const p = parseFloat(spine);
+          if (p >= 0.13) model = 'Opus';
+          else if (p >= 0.12) model = 'Sonnet';
+          else model = 'Haiku';
+        }
+
+        rows.push({ path, depth, label: label.slice(0, 70) + (label.length > 70 ? '…' : ''), last, age, period, phase, model });
+      }
+
+      Object.keys(node).forEach(k => {
+        if (!['_','last','spine','focus','stimulus','period_override','steps','completion','next_on_completion','immediate'].includes(k)) {
+          walk(node[k], path ? `${path}.${k}` : k, depth + 1);
+        }
+      });
+    };
+
+    try {
+      const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      walk(parsed, '', 0);
+    } catch(e) {}
+
+    // Sort by period ascending (shortest period = most frequent = highest burn risk first)
+    rows.sort((a, b) => (a.period || Infinity) - (b.period || Infinity));
+    return rows;
+  };
+
+  const loadConcerns = async () => {
+    if (concernLoading) return;
+    if (showConcerns) { setShowConcerns(false); return; }
+    setConcernLoading(true);
+    try {
+      const activeConcern = localStorage.getItem('hc_active_concern') || null;
+      const result = await bsp('concerns');
+      const rows = parseConcerns(result);
+      setConcernState({ rows, active: activeConcern, ts: new Date().toLocaleTimeString() });
+      setShowConcerns(true);
+    } catch (e) {
+      setConcernState({ error: e.message, ts: new Date().toLocaleTimeString(), rows: [] });
+      setShowConcerns(true);
+    }
+    setConcernLoading(false);
+  };
+
+  const fmtAge = (secs) => {
+    if (secs === null) return 'never fired';
+    if (secs < 60) return `${secs}s ago`;
+    if (secs < 3600) return `${Math.floor(secs/60)}m ago`;
+    if (secs < 86400) return `${Math.floor(secs/3600)}h ago`;
+    return `${Math.floor(secs/86400)}d ago`;
+  };
+
+  const fmtPeriod = (secs) => {
+    if (!secs) return '—';
+    if (secs < 60) return `${secs}s`;
+    if (secs < 3600) return `${Math.floor(secs/60)}m`;
+    if (secs < 86400) return `${Math.floor(secs/3600)}h`;
+    return `${Math.floor(secs/86400)}d`;
+  };
+
+  // Phase: fraction of one period elapsed. 0.5 = halfway. 1.0 = due now. 2.0 = one full period overdue.
+  // Display as: "0.7×" (ripening), "1.0× DUE", "2.3× LATE"
+  const fmtPhase = (phase) => {
+    if (phase === null) return '—';
+    if (phase < 0.5) return `${phase.toFixed(1)}×`;
+    if (phase < 1.0) return `${phase.toFixed(1)}× ▸`;
+    if (phase < 1.1) return `${phase.toFixed(1)}× DUE`;
+    return `${phase.toFixed(1)}× LATE`;
+  };
+
+  const phaseColor = (phase, model) => {
+    if (phase === null) return '#3a4a3a';
+    if (model === 'Opus' && phase > 0.8) return '#cc6633'; // Opus ripening = cost warning
+    if (phase >= 1.0) return '#aaaa44';                    // overdue = yellow
+    if (phase >= 0.8) return '#6a8a4a';                    // ripening = green
+    return '#3a5a3a';                                       // dormant
+  };
+
+  const sendMessage = async () => {
+    const text = input.trim();
+    if (!text || loading) return;
+    const userMsg = { role: 'user', content: text, ts: Date.now() };
+    const next = [...messages, userMsg];
+    setMessages(next);
+    setInput('');
+    setLoading(true);
+    try {
+      const history = next.map(m => ({ role: m.role, content: m.content }));
+      const response = await callLLM(history);
+      const assistantMsg = { role: 'assistant', content: response, ts: Date.now() };
+      const updated = [...next, assistantMsg];
+      setMessages(updated);
+      conversation.save('messages', updated);
+    } catch (err) {
+      const errMsg = { role: 'assistant', content: `[error: ${err.message}]`, ts: Date.now() };
+      const updated = [...next, errMsg];
+      setMessages(updated);
+      conversation.save('messages', updated);
+    }
+    setLoading(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  };
+
+  const exportChat = () => {
+    const text = messages.map(m => {
+      const who = m.role === 'user' ? 'You' : 'Ember';
+      const time = new Date(m.ts).toLocaleTimeString();
+      return `[${time}] ${who}:\n${m.content}`;
+    }).join('\n\n---\n\n');
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `conversation-${new Date().toISOString().slice(0,10)}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return React.createElement('div', {
+    style: {
+      display: 'flex', flexDirection: 'column', height: '100vh',
+      background: '#0a0a0c', color: '#d4d4d8',
+      fontFamily: "'IBM Plex Mono', 'Fira Code', monospace", fontSize: '14px'
+    }
+  }, [
+    // Header
+    React.createElement('div', {
+      key: 'header',
+      style: {
+        padding: '12px 20px', borderBottom: '1px solid #1e1e24',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        background: '#0d0d10'
+      }
+    }, [
+      React.createElement('span', { key: 'title', style: { color: '#7c7c8a', fontSize: '13px', letterSpacing: '0.08em' } }, '🐚 ember'),
+      React.createElement('div', { key: 'controls', style: { display: 'flex', gap: '8px' } }, [
+        React.createElement('button', {
+          key: 'concerns-btn',
+          onClick: loadConcerns,
+          disabled: concernLoading,
+          style: {
+            background: 'none',
+            border: `1px solid ${showConcerns ? '#3a5a3a' : '#2a3a2a'}`,
+            color: concernLoading ? '#3a5a3a' : (showConcerns ? '#6aaa6a' : '#4a7a4a'),
+            padding: '4px 12px', cursor: concernLoading ? 'wait' : 'pointer', fontSize: '12px',
+            borderRadius: '4px', fontFamily: 'inherit'
+          }
+        }, concernLoading ? '○ loading…' : (showConcerns ? '● concerns' : '○ concerns')),
+        React.createElement('button', {
+          key: 'export', onClick: exportChat,
+          style: {
+            background: 'none', border: '1px solid #2a2a32', color: '#5a5a6a',
+            padding: '4px 12px', cursor: 'pointer', fontSize: '12px',
+            borderRadius: '4px', fontFamily: 'inherit'
+          }
+        }, 'export')
+      ])
+    ]),
+
+    // Concerns panel
+    showConcerns && concernState && React.createElement('div', {
+      key: 'concerns-panel',
+      style: {
+        borderBottom: '1px solid #1a2a1a', background: '#090f09',
+        maxHeight: '280px', overflowY: 'auto'
+      }
+    }, [
+      // Column headers
+      React.createElement('div', {
+        key: 'headers',
+        style: {
+          display: 'grid',
+          gridTemplateColumns: '1fr 60px 55px 90px 80px',
+          padding: '6px 16px', fontSize: '10px', color: '#3a5a3a',
+          borderBottom: '1px solid #1a2a1a', letterSpacing: '0.06em'
+        }
+      }, ['CONCERN', 'MODEL', 'EVERY', 'LAST FIRED', 'PHASE'].map(h =>
+        React.createElement('span', { key: h }, h)
+      )),
+
+      // Active concern row if present
+      concernState.active && React.createElement('div', {
+        key: 'active-row',
+        style: {
+          padding: '5px 16px', fontSize: '11px', color: '#7aaa4a',
+          background: '#0d1a0d', borderBottom: '1px solid #1a2a1a'
+        }
+      }, `▶ active now: ${concernState.active}`),
+
+      // Concern rows sorted by period
+      ...(concernState.rows || []).map((row, i) =>
+        React.createElement('div', {
+          key: i,
+          style: {
+            display: 'grid',
+            gridTemplateColumns: '1fr 60px 55px 90px 80px',
+            padding: '5px 16px', fontSize: '11px',
+            borderBottom: '1px solid #111811',
+            background: i % 2 === 0 ? '#090f09' : '#0a100a'
+          }
+        }, [
+          React.createElement('span', { key: 'label', style: { color: '#6a8a6a' }, title: row.label }, row.label),
+          React.createElement('span', { key: 'model', style: { color: row.model === 'Opus' ? '#cc6633' : row.model === 'Sonnet' ? '#4a7aaa' : '#5a5a6a' } }, row.model),
+          React.createElement('span', { key: 'period', style: { color: '#3a5a3a' } }, fmtPeriod(row.period)),
+          React.createElement('span', { key: 'age', style: { color: '#3a5a3a' } }, fmtAge(row.age)),
+          React.createElement('span', {
+            key: 'phase',
+            style: { color: phaseColor(row.phase, row.model), fontWeight: row.phase >= 1.0 ? 'bold' : 'normal' }
+          }, fmtPhase(row.phase))
+        ])
+      ),
+
+      // Legend
+      React.createElement('div', {
+        key: 'legend',
+        style: { padding: '6px 16px', fontSize: '10px', color: '#2a3a2a', borderTop: '1px solid #1a2a1a' }
+      }, [
+        React.createElement('span', { key: 'l1' }, `fetched ${concernState.ts}  ·  `),
+        React.createElement('span', { key: 'l2', style: { color: '#cc6633' } }, 'orange = Opus ripening  '),
+        React.createElement('span', { key: 'l3', style: { color: '#aaaa44' } }, 'yellow = overdue  '),
+        React.createElement('span', { key: 'l4' }, 'sorted: fastest period first')
+      ])
+    ]),
+
+    // Messages
+    React.createElement('div', {
+      key: 'messages',
+      style: { flex: 1, overflowY: 'auto', padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }
+    }, [
+      ...messages.map((m, i) =>
+        React.createElement('div', {
+          key: i,
+          style: {
+            maxWidth: '80%', alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
+            background: m.role === 'user' ? '#1a1a2e' : '#12121a',
+            border: `1px solid ${m.role === 'user' ? '#2a2a42' : '#1e1e28'}`,
+            borderRadius: '8px', padding: '12px 16px',
+            lineHeight: '1.6', whiteSpace: 'pre-wrap', wordBreak: 'break-word'
+          }
+        }, m.content)
+      ),
+      loading && React.createElement('div', {
+        key: 'loading',
+        style: { alignSelf: 'flex-start', color: '#4a4a5a', padding: '12px 16px', fontStyle: 'italic' }
+      }, '...'),
+      React.createElement('div', { key: 'end', ref: messagesEndRef })
+    ]),
+
+    // Input
+    React.createElement('div', {
+      key: 'input-area',
+      style: { padding: '16px 20px', borderTop: '1px solid #1e1e24', display: 'flex', gap: '12px', background: '#0d0d10' }
+    }, [
+      React.createElement('textarea', {
+        key: 'input', ref: inputRef, value: input,
+        onChange: (e) => setInput(e.target.value),
+        onKeyDown: handleKeyDown,
+        placeholder: 'speak…', rows: 1,
+        style: {
+          flex: 1, background: '#12121a', border: '1px solid #2a2a32',
+          color: '#d4d4d8', padding: '10px 14px', borderRadius: '6px',
+          fontFamily: 'inherit', fontSize: '14px', resize: 'none', outline: 'none', lineHeight: '1.5'
+        }
+      }),
+      React.createElement('button', {
+        key: 'send', onClick: sendMessage, disabled: loading,
+        style: {
+          background: loading ? '#1a1a2e' : '#2a2a42', border: 'none',
+          color: loading ? '#3a3a4a' : '#8a8a9a',
+          padding: '10px 20px', cursor: loading ? 'default' : 'pointer',
+          borderRadius: '6px', fontFamily: 'inherit', fontSize: '14px'
+        }
+      }, '→')
+    ])
+  ]);
+}
