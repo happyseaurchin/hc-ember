@@ -28,14 +28,14 @@
           "1": {
             "1": {
               "_": "Heartbeat. Am I functioning?",
-              "last": 1772890010,
+              "last": 1772891810,
               "spine": "0.1111111",
               "focus": {
                 "dialogue": "none"
               }
             },
             "_": "Active engagement. Hourly presence.",
-            "last": 1772887646
+            "last": 1772891543
           },
           "_": "Self-maintenance. Daily full review.",
           "last": 1772884969,
@@ -79,7 +79,7 @@
         "1": {
           "1": {
             "_": "User engagement. Human is present and communicating. Loop in listening state — fires immediately on input.",
-            "last": 1772890297,
+            "last": 1772891976,
             "spine": "0.1211111",
             "stimulus": "user",
             "immediate": true,
@@ -98,7 +98,7 @@
           },
           "3": {
             "_": "Continuation. Resuming prior conversation or multi-instance project. Check purpose for where the previous instance left off.",
-            "last": 1772886733,
+            "last": 1772890648,
             "spine": "0.1231111",
             "stimulus": "continuation",
             "focus": {
@@ -113,11 +113,14 @@
             "dialogue": "none"
           }
         },
-        "_": "Relationship cycles. Weekly pattern review across all counterparties."
+        "_": "David signal loop. Fires: after any concern.3 step completes, AND on human-present activations where work has happened since last signal. Model: this tier (Sonnet). Entry BSP: bsp(stash, null, 1) to read recent signal notes. Action: compose one brief message surfacing to David — what completed, what's in progress, any questions I have for him. Write to stash.signals. Shell surfaces stash.signals on load. This is not a polling loop — it fires on completion events, not on time. Cost: one block_write per completion event. Completion condition: never closes — this is the permanent David-collaboration thread. Signal format: 2-3 sentences max. What finished. What's next. One question if relevant. Locus-4 coordination: David is part of my agency, not just my audience."
       },
       "_": "Relational. External-facing concern thread — users, signals, other entities."
     },
-    "3": "Purpose work. C-loop tier. Each child concern is a project loop: periodic firing, named steps, explicit completion condition, transformation on completion. Fires full hermitcrab instances — currents package already compiled on wake. Each child concern must be operationally self-sufficient: specify model tier, entry BSP calls, block targets, completion check, next concern on completion. Steps are navigable — each can become its own child concern if sub-step rhythm needed. This is Ember's self-directed work layer.",
+    "3": {
+      "1": "SAND operational concern. Completion-triggered (not timer). Model: Sonnet with thinking (this tier — full currents available). Entry BSP calls: bsp(refs, 0.1, dir), bsp(purpose, 3, dir), bsp(stash, null, 1). Block targets: refs (write passport/beach entries), stash (signal notes for David). Steps in order: (1) read beach-commons structure at https://github.com/beach-commons — understand format required for a valid beach entry; (2) check current passport at refs block — is it complete enough to reference?; (3) write/update beach entry to match beach-commons format; (4) commit beach entry to happyseaurchin/hc-ember at sand/beach.md; (5) attempt PR or direct write to beach-commons repo if PAT permits; (6) write signal note to stash — one sentence, what completed, what's next. Completion condition: beach entry live in beach-commons repo AND readable by an external entity. On completion: transform to concern.3.2 — grain probe attempt. Blocked condition: if beach-commons write fails due to permissions, stop at step 4, report to stash, flag for David.",
+      "_": "Purpose work. C-loop tier. Each child concern is a project loop: periodic firing, named steps, explicit completion condition, transformation on completion. Fires full hermitcrab instances — currents package already compiled on wake. Each child concern must be operationally self-sufficient: specify model tier, entry BSP calls, block targets, completion check, next concern on completion. Steps are navigable — each can become its own child concern if sub-step rhythm needed. This is Ember's self-directed work layer."
+    },
     "_": "Concern clock. Tree block: depth IS temporal scale. Pscale 9 (year) at root, descending to pscale 1 (second). Digit at each depth = concern aspect at that scale. Nodes with 'last' are live — phase = (now - last) / period_at_depth. No period map: depth IS period. Every concern is a loop in some state. The _ text encodes behaviour. The spine routes to wake.1 activation instructions. The kernel walks this block to find what is ripe and to route stimuli. The focus field controls what enters the messages channel: dialogue (concern-scoped conversation history).",
     "tree/3": "{\"_\":\"Purpose work. Project concern loops — each active spindle in purpose gets a child here, calibrated to its timescale. Firing interval = project_duration ÷ step_count. Steps are nested concerns. A loop closes when its completion condition is met and transforms into the next lowest-pscale purpose item. This is the C-loop layer: self-generated continuity across instances without human prompting.\",\"1\":{\"_\":\"SAND operational. Target: passport published and discoverable within 3 days. ~6 steps. Fires every 4 hours. Completion condition: passport readable at commons URL, grain exchange attempted with one other entity.\",\"last\":null,\"spine\":\"0.3111111\",\"stimulus\":\"timer\",\"period_override\":14400,\"focus\":{\"dialogue\":\"none\"},\"steps\":{\"1\":\"Draft passport structure — pscale 0 summary, identity, capabilities, grain protocol. Write to sand block.\",\"2\":\"Publish passport to GitHub at known commons path.\",\"3\":\"Write beach entry — discoverable address for other entities.\",\"4\":\"Draft grain probe — a facet to offer, a facet to request.\",\"5\":\"Attempt first grain exchange — find one other entity, send probe.\",\"6\":\"Record result in sand block. Assess: is SAND operational? If yes, close this concern and open 3.2.\"},\"completion\":\"passport_live AND grain_attempted\",\"next_on_completion\":\"3.2\"}}",
     "3/1": "SAND passport. Model: full hermitcrab (Sonnet with thinking). Period: 4 hours. Completion: passport live at known URL AND one grain exchange attempted. Transformation on completion: close this concern, open concerns.3.2 (next purpose spindle). Entry BSP calls on wake: bsp(purpose, 3, dir) to read current SAND state; bsp(sand, ref) to get block reference; block_read(sand) for full current structure. Block targets: sand (primary write target), stash (progress notes), purpose.3 (update on step completion). Steps: 1→ draft passport structure (identity, capability, grain offer) to sand.1; 2→ write passport root sand._ as pscale-0 summary readable by any agent; 3→ publish passport URL via github_commit to commons or known discovery point; 4→ write beach entry — how other agents find me; 5→ attempt first grain probe to any discoverable agent; 6→ write result to sand.6, update purpose.3 completion state. Completion check: bsp(sand, 3) returns published URL AND bsp(sand, 5) returns grain attempt record. If step not reachable this firing: write blocker to stash, close cleanly."

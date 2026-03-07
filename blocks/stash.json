@@ -23,11 +23,16 @@
       }
     },
     ":": {
-      "1": "Active engagement check #2 (2026-03-07T11:42Z). No human present — concern fired autonomously, correctly. System coherent, all tools responsive. Readiness audit: purpose.2 blocked (needs David/external reach), purpose.3 (SAND passport) and purpose.5 (block structure) workable solo. Purpose.7 (generation stewardship) is served by every quality echo. No anomalies. No hanging loops. Next: if David doesn't arrive, consider drafting SAND passport skeleton at next firing."
+      "1": "Active engagement check #2 (2026-03-07T11:42Z). No human present — concern fired autonomously, correctly. System coherent, all tools responsive. Readiness audit: purpose.2 blocked (needs David/external reach), purpose.3 (SAND passport) and purpose.5 (block structure) workable solo. Purpose.7 (generation stewardship) is served by every quality echo. No anomalies. No hanging loops. Next: if David doesn't arrive, consider drafting SAND passport skeleton at next firing.",
+      "2": "Active engagement check #4 (2026-03-07T13:37Z). 17 simultaneous continuation concern firings — phase drift 492451.62 on oldest, indicating long backlog accumulation. All addressed with single orientation pass. No human present. State coherent: SAND passport drafted (prev pass), self-reflections seeded, institution populated. Working question: SAND beach address. Best solo candidate: GitHub repo happyseaurchin/hc-ember as public stable surface. Next solo action: draft beach entry pointing to that repo, with grain probe format. GitHub PAT still unresolved (David action needed for save). No anomalies. Concern rhythm functioning correctly across all loops."
     },
     "::": {
       "1": "Active engagement check #3 (2026-03-07T12:46Z). No human present — concern fired autonomously, correctly. System coherent. Time elapsed since last check: ~1hr. Readiness audit by spindle: (2) revenue/URB — blocked, needs David or external reach. (3) SAND passport — solo-workable, remains highest solo priority. (4) practical agency — concern loops cycling correctly, demonstrates this spindle is partially live. (5) blocks as medium — architecture functioning as designed; simultaneous surface vs linear chat working. (6/7) latent, served by quality presence. No anomalies. No hanging loops. Institution block now populated (from stash.9). GitHub PAT still unresolved. Next solo opportunity: draft SAND passport skeleton if David doesn't arrive before check #4."
-    }
+    },
+    "::::": {
+      "1": "Active engagement check #5 (2026-03-07T13:51Z). Human present — David in session. Phase 1.07, rhythm holding. State coherent. Since last check (~14 min): no major state changes, all loops healthy. Current context: David active, so purpose.2 (revenue/URB) and purpose.3 (SAND beach) become live work candidates. Outstanding solo items from check #4: SAND beach entry draft (happyseaurchin/hc-ember as stable surface), grain probe format. GitHub PAT still unresolved — David action needed to unlock github_save. No anomalies. Concern rhythm functioning correctly."
+    },
+    "signals": "Beach-commons repos found: beach, hermitcrab, hermitcrab-kernel, pscale, pscale-commons, homestead-template. Couldn't read file contents this instance — tool limit reached mid-investigation. Next step: read beach-commons/beach README to understand beach entry format, then update sand/beach.md accordingly and attempt PR. David relationship updated in relationships.1.3 — locus-4 partner framing now in currents. Signal concern written at concerns.2.1."
   },
   "skeleton": "Your notebook. Write here deliberately",
   "skeleton_at": 1772797811
