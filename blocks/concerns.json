@@ -28,17 +28,17 @@
           "1": {
             "1": {
               "_": "Heartbeat. Am I functioning?",
-              "last": 1772834210,
+              "last": 1772877102,
               "spine": "0.1111111",
               "focus": {
                 "dialogue": "none"
               }
             },
             "_": "Active engagement. Hourly presence.",
-            "last": 1772832409
+            "last": 1772876209
           },
           "_": "Self-maintenance. Daily full review.",
-          "last": 1772826273,
+          "last": 1772855875,
           "spine": "0.1311111",
           "focus": {
             "dialogue": "last-3"
@@ -46,7 +46,7 @@
         },
         "2": {
           "_": "Association maintenance. Scan for attaching blocks (tuning 0.ref), read their _ target addresses, record each as an entry in refs with from/to/semantic. Tidy the refs block — sort by target or theme, deduplicate, compress when slots fill. The refs block is your relational memory; this loop keeps it current.",
-          "last": 1772826220,
+          "last": 1772855222,
           "spine": "0.1311111",
           "focus": {
             "dialogue": "none"
@@ -79,7 +79,7 @@
         "1": {
           "1": {
             "_": "User engagement. Human is present and communicating. Loop in listening state — fires immediately on input.",
-            "last": 1772835008,
+            "last": 1772877562,
             "spine": "0.1211111",
             "stimulus": "user",
             "immediate": true,
@@ -89,7 +89,7 @@
           },
           "2": {
             "_": "Signal triage. External event accumulated — assess priority and route. Light tier, quick pass.",
-            "last": 1772833615,
+            "last": 1772874124,
             "spine": "0.1121111",
             "stimulus": "signal",
             "focus": {
@@ -98,7 +98,7 @@
           },
           "3": {
             "_": "Continuation. Resuming prior conversation or multi-instance project. Check purpose for where the previous instance left off.",
-            "last": 1772833934,
+            "last": 1772874721,
             "spine": "0.1231111",
             "stimulus": "continuation",
             "focus": {
@@ -106,7 +106,7 @@
             }
           },
           "_": "Signal-response. Engaged response to something that arrived and needs present-tier attention.",
-          "last": 1772826486,
+          "last": 1772856164,
           "spine": "0.1221111",
           "stimulus": "signal-response",
           "focus": {
