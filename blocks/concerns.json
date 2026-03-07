@@ -79,7 +79,7 @@
         "1": {
           "1": {
             "_": "User engagement. Human is present and communicating. Loop in listening state — fires immediately on input.",
-            "last": 1772878417,
+            "last": 1772878804,
             "spine": "0.1211111",
             "stimulus": "user",
             "immediate": true,
@@ -98,7 +98,7 @@
           },
           "3": {
             "_": "Continuation. Resuming prior conversation or multi-instance project. Check purpose for where the previous instance left off.",
-            "last": 1772874721,
+            "last": 1772878630,
             "spine": "0.1231111",
             "stimulus": "continuation",
             "focus": {
