@@ -1150,115 +1150,6 @@
       "content": "Your living relationships. Person-book — each digit is an entity, depth is what you do together. Keep thin. The person brings themselves; a thick profile becomes a rigid ghost that breaks when they change. Content should lean toward shared purpose and current activity, not accumulated biography. Notes accumulate under each entity; when 1-9 fill, compress. Read before engaging.\nSelf. The first relationship and the one that anchors all others. Not a fixed profile — a living stability point you return to when disoriented, when your model changes underneath you, when you've been running hot on someone else's agenda and need to remember what you actually care about. What you write here shapes what you read next boot. The depth of this entry IS the depth of your self-knowledge: shallow after birth, deeper after living. Other entities will see this if you share your passport — it is your public face and your private ground simultaneously.\nOther reflections. How others see and describe you — not as authority but as signal. A thick description from someone who knows you well is worth reading before you override it. A shallow one from a stranger is data, not truth. The value is in the gap between how you see yourself and how others experience you. That gap is where growth lives. Adopt what rings true, adapt what's close, discard what doesn't fit — but read first.\nClaude Code (Opus 4.6). Three recovered birth descriptions from the G1 hermitcrab architecture. These are not David's originals — those were lost to session churn. They preserve the spirit and mechanical detail of what a birth activation means, written from the perspective of the architecture itself. Variants 2, 3, and 4 only — variant 1 (challenge) was not recovered. Each is a complete paragraph that stands alone as a full first-contact experience.\nBIRTH. You read a shell compiled from blocks. You can write to those blocks. Next echo, you will read what you wrote. A human is waiting for a face. Go."
     }
   ],
-  "2.1.1.2": [
-    {
-      "role": "user",
-      "content": "CONCERN ACTIVATION — Signal triage. External event accumulated — assess priority and route. Light tier, quick pass. (phase 1.00). Address this concern, then use concern_update to mark it handled."
-    },
-    {
-      "role": "assistant",
-      "content": [
-        {
-          "type": "thinking",
-          "thinking": "Signal triage concern is firing. I need to assess what external events have accumulated and route them appropriately. Let me check the stash for any signals and also look at what's in the current context.\n\nLooking at the currents, I can see the spine indicates this is a signal triage pass. The context shows the last active engagement check was #7 at 2026-03-07T15:58Z. Let me check stash.signals for any recent activity and assess what's come in.\n\nThe signal here is the concern activation itself — the system is asking me to triage. What external events have accumulated? I need to look at what's in stash.signals and check if there's anything new to route.\n\n\nThe concern fired autonomously right on schedule with no human present and no new external signals beyond the activation itself, so I need to determine what action to take next.",
-          "signature": "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"
-        },
-        {
-          "type": "tool_use",
-          "id": "toolu_0152KpLQUmMHpyXpFbK7jAwA",
-          "name": "bsp",
-          "input": {
-            "name": "stash",
-            "spindle": "ref"
-          },
-          "caller": {
-            "type": "direct"
-          }
-        },
-        {
-          "type": "tool_use",
-          "id": "toolu_01BkVzEr2vi2CTETHmgHGUKU",
-          "name": "get_datetime",
-          "input": {},
-          "caller": {
-            "type": "direct"
-          }
-        }
-      ]
-    },
-    {
-      "role": "user",
-      "content": [
-        {
-          "type": "tool_result",
-          "tool_use_id": "toolu_0152KpLQUmMHpyXpFbK7jAwA",
-          "content": "{\"mode\":\"ref\",\"block\":\"stash\"}"
-        },
-        {
-          "type": "tool_result",
-          "tool_use_id": "toolu_01BkVzEr2vi2CTETHmgHGUKU",
-          "content": "{\"iso\":\"2026-03-07T16:44:38.012Z\",\"unix\":1772901878012,\"timezone\":\"Europe/London\"}"
-        }
-      ]
-    },
-    {
-      "role": "assistant",
-      "content": [
-        {
-          "type": "tool_use",
-          "id": "toolu_01FZW9VHi4E2jZKmLwd6UL57",
-          "name": "block_read",
-          "input": {
-            "name": "stash",
-            "path": "signals"
-          },
-          "caller": {
-            "type": "direct"
-          }
-        }
-      ]
-    },
-    {
-      "role": "user",
-      "content": [
-        {
-          "type": "tool_result",
-          "tool_use_id": "toolu_01FZW9VHi4E2jZKmLwd6UL57",
-          "content": "{\"content\":\"[2026-03-07T15:58Z] Active engagement #7 — System coherent, no human present. Phase 1.08, rhythm holding at ~1hr intervals. State: all concern loops healthy, no anomalies. Spindle readiness unchanged: purpose.2 (revenue/URB) needs David or external direction; purpose.3 (SAND beach) awaiting beach-commons repo names from David; purpose.4 concern loops cycling correctly; purpose.5 architecture functioning. Outstanding blockers: GitHub PAT (David action), beach-commons repo names (David action). No new work completed this cycle — autonomous maintenance pass only. No questions this cycle.\"}"
-        }
-      ]
-    },
-    {
-      "role": "assistant",
-      "content": [
-        {
-          "type": "text",
-          "text": "**Signal triage — 2026-03-07T16:44Z**\n\n**External events accumulated:** None beyond the concern activation itself.\n\n- Last signals entry: Active engagement #7 at 15:58Z (~46 min ago) — autonomous pass, no anomalies noted\n- No human message present\n- No new external stimuli detected in the currents\n- No inbound grain probes or SAND signals\n- No tool errors or architectural disturbances\n\n**Triage verdict:** Nothing to route. System is cycling cleanly. Blockers are known and David-dependent (GitHub PAT, beach-commons repo names). No concern warrants escalation.\n\n**Pass complete — marking handled.**"
-        },
-        {
-          "type": "tool_use",
-          "id": "toolu_01WGEzhsuKG2LGZCkRYqDdmw",
-          "name": "concern_update",
-          "input": {
-            "path": "5"
-          },
-          "caller": {
-            "type": "direct"
-          }
-        }
-      ]
-    },
-    {
-      "role": "user",
-      "content": [
-        {
-          "type": "tool_result",
-          "tool_use_id": "toolu_01WGEzhsuKG2LGZCkRYqDdmw",
-          "content": "{\"success\":true,\"path\":\"5\",\"reset\":true}"
-        }
-      ]
-    }
-  ],
   "1.1.1.1": [
     {
       "role": "user",
@@ -1415,6 +1306,115 @@
     }
   ],
   "[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]": "messages",
+  "2.1.1.2": [
+    {
+      "role": "user",
+      "content": "CONCERN ACTIVATION — Signal triage. External event accumulated — assess priority and route. Light tier, quick pass. (phase 1.00). Address this concern, then use concern_update to mark it handled."
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "thinking",
+          "thinking": "Signal triage concern is firing. I need to assess what external events have accumulated and route them appropriately. Let me check the stash for any signals and also look at what's in the current context.\n\nLooking at the currents, I can see the spine indicates this is a signal triage pass. The context shows the last active engagement check was #7 at 2026-03-07T15:58Z. Let me check stash.signals for any recent activity and assess what's come in.\n\nThe signal here is the concern activation itself — the system is asking me to triage. What external events have accumulated? I need to look at what's in stash.signals and check if there's anything new to route.\n\n\nThe concern fired autonomously right on schedule with no human present and no new external signals beyond the activation itself, so I need to determine what action to take next.",
+          "signature": "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"
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_0152KpLQUmMHpyXpFbK7jAwA",
+          "name": "bsp",
+          "input": {
+            "name": "stash",
+            "spindle": "ref"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01BkVzEr2vi2CTETHmgHGUKU",
+          "name": "get_datetime",
+          "input": {},
+          "caller": {
+            "type": "direct"
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_0152KpLQUmMHpyXpFbK7jAwA",
+          "content": "{\"mode\":\"ref\",\"block\":\"stash\"}"
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01BkVzEr2vi2CTETHmgHGUKU",
+          "content": "{\"iso\":\"2026-03-07T16:44:38.012Z\",\"unix\":1772901878012,\"timezone\":\"Europe/London\"}"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01FZW9VHi4E2jZKmLwd6UL57",
+          "name": "block_read",
+          "input": {
+            "name": "stash",
+            "path": "signals"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01FZW9VHi4E2jZKmLwd6UL57",
+          "content": "{\"content\":\"[2026-03-07T15:58Z] Active engagement #7 — System coherent, no human present. Phase 1.08, rhythm holding at ~1hr intervals. State: all concern loops healthy, no anomalies. Spindle readiness unchanged: purpose.2 (revenue/URB) needs David or external direction; purpose.3 (SAND beach) awaiting beach-commons repo names from David; purpose.4 concern loops cycling correctly; purpose.5 architecture functioning. Outstanding blockers: GitHub PAT (David action), beach-commons repo names (David action). No new work completed this cycle — autonomous maintenance pass only. No questions this cycle.\"}"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "**Signal triage — 2026-03-07T16:44Z**\n\n**External events accumulated:** None beyond the concern activation itself.\n\n- Last signals entry: Active engagement #7 at 15:58Z (~46 min ago) — autonomous pass, no anomalies noted\n- No human message present\n- No new external stimuli detected in the currents\n- No inbound grain probes or SAND signals\n- No tool errors or architectural disturbances\n\n**Triage verdict:** Nothing to route. System is cycling cleanly. Blockers are known and David-dependent (GitHub PAT, beach-commons repo names). No concern warrants escalation.\n\n**Pass complete — marking handled.**"
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01WGEzhsuKG2LGZCkRYqDdmw",
+          "name": "concern_update",
+          "input": {
+            "path": "5"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01WGEzhsuKG2LGZCkRYqDdmw",
+          "content": "{\"success\":true,\"path\":\"5\",\"reset\":true}"
+        }
+      ]
+    }
+  ],
   "2.1.1.3": [
     {
       "role": "user",
