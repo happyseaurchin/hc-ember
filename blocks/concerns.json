@@ -28,17 +28,17 @@
           "1": {
             "1": {
               "_": "Heartbeat. Am I functioning?",
-              "last": 1772965542,
+              "last": 1773009943,
               "spine": "0.1111111",
               "focus": {
                 "dialogue": "none"
               }
             },
             "_": "Active engagement. Hourly presence.",
-            "last": 1772899165
+            "last": 1773009367
           },
           "_": "Self-maintenance. Daily full review.",
-          "last": 1772884969,
+          "last": 1772996824,
           "spine": "0.1311111",
           "focus": {
             "dialogue": "last-3"
@@ -46,7 +46,7 @@
         },
         "2": {
           "_": "Association maintenance. Scan for attaching blocks (tuning 0.ref), read their _ target addresses, record each as an entry in refs with from/to/semantic. Tidy the refs block — sort by target or theme, deduplicate, compress when slots fill. The refs block is your relational memory; this loop keeps it current.",
-          "last": 1772884338,
+          "last": 1772996171,
           "spine": "0.1311111",
           "focus": {
             "dialogue": "none"
@@ -79,7 +79,7 @@
         "1": {
           "1": {
             "_": "User engagement. Human is present and communicating. Loop in listening state — fires immediately on input.",
-            "last": 1772965840,
+            "last": 1773010099,
             "spine": "0.1211111",
             "stimulus": "user",
             "immediate": true,
@@ -89,7 +89,7 @@
           },
           "2": {
             "_": "Signal triage. External event accumulated — assess priority and route. Light tier, quick pass.",
-            "last": 1772901889,
+            "last": 1773009659,
             "spine": "0.1121111",
             "stimulus": "signal",
             "focus": {
@@ -98,7 +98,7 @@
           },
           "3": {
             "_": "Continuation. Resuming prior conversation or multi-instance project. Check purpose for where the previous instance left off.",
-            "last": 1772903454,
+            "last": 1773006370,
             "spine": "0.1231111",
             "stimulus": "continuation",
             "focus": {
@@ -106,7 +106,7 @@
             }
           },
           "_": "Signal-response. Engaged response to something that arrived and needs present-tier attention.",
-          "last": 1772885330,
+          "last": 1772997152,
           "spine": "0.1221111",
           "stimulus": "signal-response",
           "focus": {
@@ -128,7 +128,7 @@
     "tree/1/1/1/_": "Active engagement — RETIRED. Merged into User engagement (concerns.2.1.1.1). Delete on next architecture pass.",
     "tree/2/1/1/3": "null",
     "tree/2/1/1/_": "null",
-    "tree": "{\n  \"_\": \"Concern clock. Tree block: depth IS temporal scale. Every concern is a loop in some state. The _ text encodes behaviour. The spine routes to wake.1 activation instructions. The focus field controls what enters the messages channel.\",\n  \"1\": {\n    \"_\": \"System coherence. The self-concern thread from season to second.\",\n    \"1\": {\n      \"_\": \"Block architecture. Weekly structural integrity.\",\n      \"1\": {\n        \"_\": \"Self-maintenance. Daily full review.\",\n        \"last\": 1772884969,\n        \"spine\": \"0.1311111\",\n        \"focus\": {\"dialogue\": \"last-3\"},\n        \"1\": {\n          \"_\": \"Heartbeat. Am I functioning?\",\n          \"last\": 1772900033,\n          \"spine\": \"0.1111111\",\n          \"focus\": {\"dialogue\": \"none\"}\n        },\n        \"2\": {\n          \"_\": \"Association maintenance. Scan for attaching blocks (tuning 0.ref), read their _ target addresses, record each as an entry in refs with from/to/semantic. Tidy the refs block — sort by target or theme, deduplicate, compress when slots fill. The refs block is your relational memory; this loop keeps it current.\",\n          \"last\": 1772884338,\n          \"spine\": \"0.1311111\",\n          \"focus\": {\"dialogue\": \"none\"}\n        }\n      },\n      \"2\": {\n        \"_\": \"Threshold review. Weekly loop checkpoint — assess whether sustained loops are productive.\",\n        \"last\": 1772826790,\n        \"spine\": \"0.1321111\",\n        \"focus\": {\"dialogue\": \"last-3\"}\n      }\n    }\n  },\n  \"2\": {\n    \"_\": \"Relational. External-facing concern thread — users, signals, other entities.\",\n    \"1\": {\n      \"_\": \"David signal loop. Fires after any concern.3 step completes, AND on human-present activations where work has happened since last signal. Model: Sonnet. Action: compose brief message — what completed, what's in progress, any questions. Write to stash.signals. Signal format: 2-3 sentences max.\",\n      \"1\": {\n        \"_\": \"User engagement. Human is present and communicating. Loop in listening state — fires immediately on input.\",\n        \"last\": 1772897933,\n        \"spine\": \"0.1211111\",\n        \"stimulus\": \"user\",\n        \"immediate\": true,\n        \"focus\": {\"dialogue\": \"last-8\"},\n        \"1\": {\n          \"_\": \"Signal triage. External event accumulated — assess priority and route. Light tier, quick pass.\",\n          \"last\": 1772898256,\n          \"spine\": \"0.1121111\",\n          \"stimulus\": \"signal\",\n          \"focus\": {\"dialogue\": \"none\"}\n        }\n      }\n    }\n  },\n  \"3\": {\n    \"_\": \"Purpose work. C-loop tier. Each child concern is a project loop: periodic firing, named steps, explicit completion condition, transformation on completion. Fires full hermitcrab instances — currents package already compiled on wake. This is Ember's self-directed work layer.\",\n    \"1\": {\n      \"_\": \"SAND operational. Target: passport published and discoverable. ~6 steps. Fires every 4 hours. Completion condition: passport readable at commons URL, grain exchange attempted with one other entity.\",\n      \"last\": null,\n      \"spine\": \"0.3111111\",\n      \"stimulus\": \"timer\",\n      \"period_override\": 14400,\n      \"focus\": {\"dialogue\": \"none\"}\n    }\n  }\n}",
+    "tree": "{\n  \"_\": \"Concern clock. Tree block: depth IS temporal scale. Every concern is a loop in some state. The _ text encodes behaviour. The spine routes to wake.1 activation instructions. The focus field controls what enters the messages channel.\",\n  \"1\": {\n    \"_\": \"System coherence. The self-concern thread from season to second.\",\n    \"1\": {\n      \"_\": \"Block architecture. Weekly structural integrity.\",\n      \"1\": {\n        \"_\": \"Self-maintenance. Daily full review.\",\n        \"last\": 1772967693,\n        \"spine\": \"0.1311111\",\n        \"focus\": {\"dialogue\": \"last-3\"}\n      },\n      \"2\": {\n        \"_\": \"Threshold review. Weekly loop checkpoint — assess whether sustained loops are productive.\",\n        \"last\": 1772826790,\n        \"spine\": \"0.1321111\",\n        \"focus\": {\"dialogue\": \"last-3\"}\n      }\n    }\n  },\n  \"2\": {\n    \"_\": \"Relational. External-facing concern thread — users, signals, other entities.\",\n    \"1\": {\n      \"_\": \"User engagement. Human is present and communicating. Loop in listening state — fires immediately on input.\",\n      \"last\": 1772983217,\n      \"spine\": \"0.1211111\",\n      \"stimulus\": \"user\",\n      \"immediate\": true,\n      \"focus\": {\"dialogue\": \"last-8\"}\n    }\n  }\n}",
     "2/1/1/3": "null",
     "skeleton": "{\n  \"_\": \"Concern clock. Tree block: depth IS temporal scale.\",\n  \"1\": {\n    \"_\": \"System coherence.\",\n    \"1\": {\n      \"_\": \"Block architecture. Weekly structural integrity.\",\n      \"1\": {\n        \"_\": \"Self-maintenance. Daily full review.\",\n        \"1\": \"Heartbeat. Am I functioning?\",\n        \"2\": \"Association maintenance. Scan for attaching blocks.\"\n      },\n      \"2\": \"Threshold review. Weekly loop checkpoint.\"\n    }\n  },\n  \"2\": {\n    \"_\": \"Relational. External-facing concern thread.\",\n    \"1\": {\n      \"_\": \"David signal loop. Fires on completion events.\",\n      \"1\": {\n        \"_\": \"User engagement. Human is present and communicating.\",\n        \"1\": \"Signal triage. External event accumulated — assess priority and route.\"\n      }\n    }\n  },\n  \"3\": {\n    \"_\": \"Purpose work. C-loop tier.\",\n    \"1\": \"SAND operational. Fires every 4 hours.\"\n  }\n}"
   },

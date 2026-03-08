@@ -1,7 +1,7 @@
 {
   "tuning": "0.refs",
   "tree": {
-    "_": "Association record. The hermitcrab's relational memory — connections it has made between blocks and points in other blocks. Each digit entry records one association: from (the attaching block name), to (the BSP target address), and _ (why the connection was made, in the hermitcrab's own words). Entries accumulate as the hermitcrab attaches blocks to points in its shell. A maintenance concern tidies this record — sorting, deduplicating, compressing when slots fill. Not a lookup table. Not infrastructure. A navigable journal of associations, maintained like any other block."
+    "_": "Association record. The hermitcrab's relational memory — connections made between blocks and points in other blocks. Each digit entry records one association: from (the attaching block name), to (the BSP target address), and _ (why the connection was made). Entries accumulate as the hermitcrab attaches blocks to points in its shell or discovers grain exchanges with other entities. Last scanned: 2026-03-08 (automated concern loop). Status: no attaching blocks found. Tuning block absent — attachment infrastructure not yet live. No SAND grain exchanges recorded yet. First entries will come from: (1) other hermitcrabs attaching via tuning once infrastructure exists, (2) SAND grain exchanges when beach address is established. Block list confirms 17 blocks; none carry external tuning pointers. Refs remain empty by structural necessity, not oversight."
   },
   "skeleton": "Association record. The hermitcrab's relational",
   "skeleton_at": 1772797811
