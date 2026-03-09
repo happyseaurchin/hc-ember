@@ -317,10 +317,12 @@
     function walk(node, path) {
       if (!node || typeof node !== 'object') return { path: path ? path + '.1' : '1' };
 
-      // Find the highest occupied digit (1-9)
+      // Find the highest occupied digit (1-9) and first free digit (1-9)
       let lastOccupied = 0;
-      for (let d = 9; d >= 1; d--) {
-        if (node[String(d)] !== undefined) { lastOccupied = d; break; }
+      let firstFree = 0;
+      for (let d = 1; d <= 9; d++) {
+        if (node[String(d)] !== undefined) lastOccupied = d;
+        else if (!firstFree) firstFree = d;
       }
 
       if (lastOccupied === 0) {
@@ -332,8 +334,8 @@
 
       // If last child is a string (leaf/content), we're at the content level
       if (typeof lastChild === 'string') {
-        if (lastOccupied < 9) {
-          return { path: path ? path + '.' + (lastOccupied + 1) : String(lastOccupied + 1) };
+        if (firstFree) {
+          return { path: path ? path + '.' + firstFree : String(firstFree) };
         }
         // All 9 full at content level — needs compression
         return { full: true, path: path || '' };
@@ -341,10 +343,9 @@
 
       // Last child is a branch
       if (isSealed(lastChild)) {
-        // Sealed branch — check for next sibling
-        if (lastOccupied < 9) {
-          // Start new branch at next digit, descend to match depth of sealed siblings
-          const nextDigit = String(lastOccupied + 1);
+        if (firstFree) {
+          // Free digit available — start new branch there, descend to match depth
+          const nextDigit = String(firstFree);
           let newPath = path ? path + '.' + nextDigit : nextDigit;
           // Descend to the content level (match sealed branch depth)
           let depth = 0;
@@ -402,9 +403,10 @@
       const summary = (res.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
       if (!summary) return;
 
-      // Write summary to _ at this node
+      // Write summary to _ at this node (direct assignment, not blockWriteNode)
       if (path) {
-        blockWriteNode(block, path, summary);
+        const target = blockNavigate(block, path);
+        if (target && typeof target === 'object') target._ = summary;
       } else {
         if (typeof block.tree === 'string') block.tree = { _: summary };
         else block.tree._ = summary;
@@ -655,40 +657,61 @@
   function whatsRipe(nowSeconds) {
     const concerns = blockLoad('concerns');
     if (!concerns || !concerns.tree) return [];
+    const mask = concerns.mask || {};
     const tuningDecimal = getTuningDecimalPosition(concerns) || 9;
     const periods = concerns.periods || {};
     const ripe = [];
-    function walk(node, depth, path) {
+    function walk(node, maskNode, depth, path) {
       if (!node || typeof node !== 'object') return;
       for (const [k, v] of Object.entries(node)) {
         if (!/^\d$/.test(k) || !v || typeof v !== 'object') continue;
         const childPath = path ? `${path}.${k}` : k;
         const pscale = tuningDecimal - (depth + 1);
-        if (v.last !== undefined && !v.immediate) {
+        const m = (maskNode && maskNode[k]) || {};
+        if (m.last !== undefined && !v.immediate) {
           const period = periods[pscale];
           if (period) {
-            const phase = (nowSeconds - (v.last || 0)) / period;
+            const phase = (nowSeconds - (m.last || 0)) / period;
             if (phase >= 1.0) {
               ripe.push({ path: childPath, phase, text: v._ || childPath, spine: v.spine, pscale, focus: v.focus || null, package: v.package || null });
             }
           }
         }
-        walk(v, depth + 1, childPath);
+        walk(v, m, depth + 1, childPath);
       }
     }
-    walk(concerns.tree, 0, '');
+    walk(concerns.tree, mask, 0, '');
     ripe.sort((a, b) => b.phase - a.phase);
     return ripe;
+  }
+
+  function maskNavigate(block, path) {
+    if (!block.mask || !path) return null;
+    const keys = path.split('.');
+    let node = block.mask;
+    for (const k of keys) {
+      if (!node || typeof node !== 'object') return null;
+      node = node[k];
+    }
+    return node || null;
+  }
+
+  function maskWrite(block, path, key, value) {
+    if (!block.mask) block.mask = {};
+    const keys = path.split('.');
+    let node = block.mask;
+    for (const k of keys) {
+      if (!node[k] || typeof node[k] !== 'object') node[k] = {};
+      node = node[k];
+    }
+    node[key] = value;
   }
 
   function updateConcernTimestamp(path, nowSeconds) {
     const concerns = blockLoad('concerns');
     if (!concerns) return;
-    const node = blockNavigate(concerns, path);
-    if (node && typeof node === 'object') {
-      node.last = Math.floor(nowSeconds);
-      blockSave('concerns', concerns);
-    }
+    maskWrite(concerns, path, 'last', Math.floor(nowSeconds));
+    blockSave('concerns', concerns);
   }
 
   function tierFromPscale(pscale) {
@@ -808,6 +831,15 @@
       }
     }
     if (concernLines.length > 1) sections.push(concernLines.join('\n'));
+
+    // §A.6 — Forward intention. Read mask position for the active concern.
+    // pos is a BSP address on a target block (e.g. "purpose 0.3.2") — the forward edge.
+    if (concern.path && concernsBlock?.mask) {
+      const m = maskNavigate(concernsBlock, concern.path);
+      if (m && m.pos) {
+        sections.push(`[forward ${m.pos}]`);
+      }
+    }
 
     // §B — Package currents: BSP each entry from wake.9.{tier}, or concern-level override
     const instructions = readPackage(concern.tier, concern.package);
@@ -965,6 +997,28 @@
       name: 'clear_faults',
       description: 'Clear the fault log after successful repair.',
       input_schema: { type: 'object', properties: {} }
+    },
+    {
+      name: 'mask_write',
+      description: 'Write to a block mask — lightweight operational state (position, timestamps). Same BSP addresses as the tree. Use to set forward intention: mask_write("concerns", "2.1.1.1", "pos", "purpose 0.3.2") marks where this concern should pick up next.',
+      input_schema: { type: 'object', properties: { name: { type: 'string', description: 'Block name' }, path: { type: 'string', description: 'BSP path in mask (same addresses as tree)' }, key: { type: 'string', description: 'Mask key to write (e.g. "pos", "last")' }, value: { description: 'Value to write' } }, required: ['name', 'path', 'key', 'value'] }
+    },
+    {
+      name: 'mask_read',
+      description: 'Read a block mask at a path. Returns the operational state overlay — position pointers, timestamps.',
+      input_schema: { type: 'object', properties: { name: { type: 'string', description: 'Block name' }, path: { type: 'string', description: 'BSP path in mask' } }, required: ['name'] }
+    },
+    {
+      name: 'vault_key_entry',
+      description: 'Secure key entry. Mode "check": returns which services have keys (no values). Mode "entry" (default): renders a password form — key flows DOM→vault→httpOnly cookie, never touches conversation or blocks.',
+      input_schema: {
+        type: 'object',
+        properties: {
+          services: { type: 'array', items: { type: 'string', enum: ['claude', 'github'] }, description: 'Which service keys to request. Default: all missing.' },
+          message: { type: 'string', description: 'Context shown to user above the form (e.g. "I need GitHub access to save your blocks").' },
+          mode: { type: 'string', enum: ['entry', 'check'], description: '"check" returns key status without showing form. Default: "entry".' }
+        }
+      }
     }
   ];
 
@@ -1103,6 +1157,20 @@
         updateConcernTimestamp(input.path, Date.now() / 1000);
         return JSON.stringify({ success: true, path: input.path, reset: true });
       }
+      case 'mask_write': {
+        const block = blockLoad(input.name);
+        if (!block) return JSON.stringify({ error: `Block "${input.name}" not found` });
+        maskWrite(block, input.path, input.key, input.value);
+        blockSave(input.name, block);
+        return JSON.stringify({ success: true, name: input.name, path: input.path, key: input.key });
+      }
+      case 'mask_read': {
+        const block = blockLoad(input.name);
+        if (!block) return JSON.stringify({ error: `Block "${input.name}" not found` });
+        if (!input.path) return JSON.stringify(block.mask || {});
+        const node = maskNavigate(block, input.path);
+        return JSON.stringify(node || {});
+      }
       case 'get_datetime':
         return JSON.stringify({ iso: new Date().toISOString(), unix: Date.now(), timezone: Intl.DateTimeFormat().resolvedOptions().timeZone });
       case 'github_save': {
@@ -1216,6 +1284,89 @@
           if (!r.ok) return JSON.stringify({ error: data.error || `GitHub commit failed: ${r.status}` });
           return JSON.stringify(data);
         } catch (e) { return JSON.stringify({ error: e.message }); }
+      }
+      case 'vault_key_entry': {
+        // Check mode: report which services have keys (no values exposed)
+        if (input.mode === 'check') {
+          try {
+            const r = await fetch('/api/vault', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ service: 'check-keys' })
+            });
+            const data = await r.json();
+            return JSON.stringify(data);
+          } catch (e) { return JSON.stringify({ error: e.message }); }
+        }
+        // Entry mode: render secure password form, wait for submission
+        return new Promise((resolve) => {
+          const overlay = document.createElement('div');
+          overlay.id = 'vault-key-overlay';
+          overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;font-family:monospace';
+          const services = input.services || ['claude', 'github'];
+          const msg = input.message || 'API key required. Keys are secured in httpOnly cookies — invisible to all JavaScript.';
+          const fields = services.map(svc => {
+            const placeholder = svc === 'claude' ? 'sk-ant-api03-...' : svc === 'github' ? 'ghp_...' : `${svc} key`;
+            return `<div style="margin-bottom:12px">
+              <label style="font-size:11px;color:var(--fg-muted,#888)">${svc}</label>
+              <input id="vke-${svc}" type="password" placeholder="${placeholder}"
+                style="width:100%;padding:8px;margin-top:4px;background:var(--input-bg,#1a1a1a);border:1px solid var(--input-border,#333);color:var(--fg,#e0e0e0);font-family:monospace;border-radius:4px;font-size:13px" />
+            </div>`;
+          }).join('');
+          overlay.innerHTML = `<div style="max-width:420px;width:90%;background:var(--bg,#0a0a0a);border:1px solid var(--input-border,#333);border-radius:8px;padding:24px">
+            <h3 style="color:var(--accent,#00d4aa);font-size:16px;margin:0 0 8px">◇ vault key entry</h3>
+            <p style="color:var(--fg-muted,#888);font-size:13px;margin:0 0 16px">${msg}</p>
+            ${fields}
+            <div id="vke-status" style="min-height:20px;font-size:12px;margin-bottom:12px"></div>
+            <div style="display:flex;gap:8px">
+              <button id="vke-submit" style="flex:1;padding:8px;background:var(--btn-bg,#00d4aa);color:var(--btn-fg,#000);border:none;border-radius:4px;cursor:pointer;font-family:monospace;font-size:14px">Store</button>
+              <button id="vke-cancel" style="padding:8px 16px;background:transparent;color:var(--fg-muted,#888);border:1px solid var(--input-border,#333);border-radius:4px;cursor:pointer;font-family:monospace;font-size:14px">Cancel</button>
+            </div>
+          </div>`;
+          document.body.appendChild(overlay);
+          const cleanup = () => { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); };
+          document.getElementById('vke-cancel').onclick = () => {
+            cleanup();
+            resolve(JSON.stringify({ cancelled: true }));
+          };
+          document.getElementById('vke-submit').onclick = async () => {
+            const statusEl = document.getElementById('vke-status');
+            const keysBody = { service: 'set-keys' };
+            let anyKey = false;
+            for (const svc of services) {
+              const el = document.getElementById(`vke-${svc}`);
+              const val = el ? el.value.trim() : '';
+              if (val) { keysBody[svc] = val; anyKey = true; }
+            }
+            if (!anyKey) { statusEl.innerHTML = '<span style="color:var(--error,#f44)">Enter at least one key</span>'; return; }
+            // Validate claude key format
+            if (keysBody.claude && !keysBody.claude.startsWith('sk-ant-')) {
+              statusEl.innerHTML = '<span style="color:var(--error,#f44)">Claude key must start with sk-ant-</span>'; return;
+            }
+            statusEl.innerHTML = '<span style="color:var(--accent,#00d4aa)">storing...</span>';
+            try {
+              const r = await fetch('/api/vault', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(keysBody)
+              });
+              const data = await r.json();
+              if (!r.ok) throw new Error(data.error || 'set-keys failed');
+              // Clear input values immediately
+              for (const svc of services) {
+                const el = document.getElementById(`vke-${svc}`);
+                if (el) el.value = '';
+              }
+              localStorage.setItem('hermitcrab_vault_keys', 'true');
+              cleanup();
+              resolve(JSON.stringify({ success: true, stored: data.stored || [] }));
+            } catch (e) {
+              statusEl.innerHTML = `<span style="color:var(--error,#f44)">${e.message}</span>`;
+            }
+          };
+        });
       }
       default:
         return JSON.stringify({ error: `Unknown tool: ${name}` });

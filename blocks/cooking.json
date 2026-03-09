@@ -814,6 +814,9 @@
       },
       "_": "User's handbook. Reading and operating the hermitcrab system — for humans and for hermitcrabs on first boot."
     },
+    "6": {
+      "1": "Delegating to a sub-LLM via call_llm. Pattern: (1) form a precise technical question — one paragraph, specific context, specific ask; (2) call call_llm with model \"fast\" for factual/technical queries, \"default\" for synthesis; (3) read the result and extract only what changes your next action; (4) write the finding to the relevant block (recipe, stash, purpose) before ending the instance. This is orchestration in miniature — same pattern scales to local LM when routing exists. The discipline: delegate, extract, persist. Don't just read the answer; write what it means for the next instance."
+    },
     "_": "Recipes. Each spindle IS a procedure — read top-to-bottom, context narrows to action. First half is domain and ingredients. Second half is steps. Last node is the taste test. Ascending digits mark the sequence; digit 1 at any step holds sub-detail."
   },
   "skeleton": {
